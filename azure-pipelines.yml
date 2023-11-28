@@ -1,0 +1,37 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- script: |
+    echo Add other tasks to build, test, and deploy your project.
+    echo See https://aka.ms/yaml
+  displayName: 'Run a multi-line script'
+- task: UiPathPack@4
+  inputs:
+    versionType: 'AutoVersion'
+    projectJsonPath: 'project.json'
+    outputType: 'Process'
+    orchestratorConnection: 'AzureUipath'
+    outputPath: '$(Build.ArtifactStagingDirectory)\Output'
+- task: UiPathDeploy@4
+  inputs:
+    orchestratorConnection: 'AzureUipath'
+    packagesPath: '$(Build.ArtifactStagingDirectory)\Output'
+    folderName: 'karan'
+- task: UiPathRunJob@4
+  inputs:
+    orchestratorConnection: 'AzureUipath'
+    processName: 'BPA_NewzureDemo'
+    folderName: 'karan'
+    user: 'izd01\12784'
